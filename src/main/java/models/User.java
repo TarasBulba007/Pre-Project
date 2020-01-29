@@ -10,9 +10,9 @@ public class User {
     private String name;
     private String email;
     private String phoneNumber;
-    private Date birthDate;
+    private LocalDate birthDate;
 
-    public User(int id, String login, String name, String email, String phoneNumber, Date birthDate) {
+    public User(int id, String login, String name, String email, String phoneNumber, LocalDate birthDate) {
         this.id = id;
         this.login = login;
         this.name = name;
@@ -21,7 +21,7 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public User(String login, String name, String email, String phoneNumber, Date birthDate) {
+    public User(String login, String name, String email, String phoneNumber, LocalDate birthDate) {
         this.login = login;
         this.name = name;
         this.email = email;
@@ -69,11 +69,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

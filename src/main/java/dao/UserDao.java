@@ -3,6 +3,7 @@ package dao;
 import models.User;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +40,9 @@ public class UserDao implements UserDaoInterface {
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.setString(4, user.getPhoneNumber());
-            java.sql.Date date = new java.sql.Date(user.getBirthDate().getTime());
-            preparedStatement.setDate(5, date);
+            preparedStatement.setDate(5, java.sql.Date.valueOf(user.getBirthDate()));
+        //    java.sql.Date date = new java.sql.Date(user.getBirthDate().getDayOfYear());
+        //    preparedStatement.setDate(5, date);
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -59,7 +61,7 @@ public class UserDao implements UserDaoInterface {
                 String name = res.getString("name");
                 String email = res.getString("email");
                 String phoneNumber = res.getString("phoneNumber");
-                Date birthDate = res.getDate("birthDate");
+                LocalDate birthDate = res.getDate("birthDate").toLocalDate();
                 user = new User(id, login, name, email, phoneNumber, birthDate);
             }
         } catch (SQLException e) {
@@ -80,7 +82,7 @@ public class UserDao implements UserDaoInterface {
                     String name = rs.getString("name");
                     String email = rs.getString("email");
                     String phoneNumber = rs.getString("phoneNumber");
-                    Date birthDate = rs.getDate("birthDate");
+                    LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
                     users.add(new User(id, login, name, email,phoneNumber, birthDate));
                 }
             } catch (SQLException e) {
@@ -97,8 +99,7 @@ public class UserDao implements UserDaoInterface {
             statement.setString(2, user.getName());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPhoneNumber());
-            java.sql.Date date = new java.sql.Date(user.getBirthDate().getTime());
-            statement.setDate(5, date);
+            statement.setDate(5, java.sql.Date.valueOf(user.getBirthDate()));
             statement.setInt(6, user.getId());
             updated = statement.executeUpdate() > 0;
         } catch (SQLException e){

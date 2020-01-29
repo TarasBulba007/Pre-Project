@@ -1,5 +1,5 @@
 dao\UserDaoInterface.class
 models\User.class
-Main.class
+service\UserService.class
 dao\UserDao.class
 servlets\LoginServlet.class

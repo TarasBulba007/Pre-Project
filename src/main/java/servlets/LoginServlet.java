@@ -2,6 +2,7 @@ package servlets;
 
 import dao.UserDao;
 import models.User;
+import service.UserService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,10 +22,11 @@ import java.util.List;
 
 public class LoginServlet extends HttpServlet  {
     private static final long serialVersionUID = 1L;
-    private UserDao userDao;
+    private UserService service;
+
 
     public void init() {
-        userDao = new UserDao();
+        service = new UserService();
     }
 
 
@@ -66,7 +69,7 @@ public class LoginServlet extends HttpServlet  {
 
     private void listUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<User> users = userDao.getAllUsers();
+        List<User> users = service.getAllUsers();
         for (User el : users){
             System.out.println(el);
         }
@@ -84,7 +87,7 @@ public class LoginServlet extends HttpServlet  {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        User existingUser = userDao.getUserById(id);
+        User existingUser = service.getUserById(id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("userForm.jsp");
         request.setAttribute("user", existingUser);
         dispatcher.forward(request, response);
@@ -96,10 +99,10 @@ public class LoginServlet extends HttpServlet  {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-        Date birthDate = new SimpleDateFormat("dd.MM.YYYY").parse(request.getParameter("birthDate"));
+        LocalDate birthDate = LocalDate.parse(request.getParameter("birthDate"));
         User newUser = new User(login, name, email, phoneNumber, birthDate);
         System.out.println("new USer: " + newUser.getId() +" " + newUser.getLogin() + " " + newUser.getName() + " " +  newUser.getEmail() + " " + newUser.getBirthDate().toString());
-        userDao.createUser(newUser);
+        service.createUser(newUser);
         response.sendRedirect("list");
 
 
@@ -111,21 +114,21 @@ public class LoginServlet extends HttpServlet  {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-        Date birthDate = new SimpleDateFormat("dd.MM.YYYY").parse(request.getParameter("birthDate"));
+        LocalDate birthDate = LocalDate.parse(request.getParameter("birthDate"));
         User var = new User(id, login, name, email, phoneNumber, birthDate);
         System.out.println(var.getBirthDate());
-        userDao.updateUser(var);
+        service.updateUser(var);
         response.sendRedirect("list");
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        userDao.deleteUser(id);
+        service.deleteUser(id);
         response.sendRedirect("list");
     }
 
     private void deleteAllUsers(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        userDao.deleteAllUsers();
+        service.deleteAllUsers();
         response.sendRedirect("list");
     }
 }
