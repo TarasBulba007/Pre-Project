@@ -29,9 +29,10 @@
         <h3 class="text-center">List of Users</h3>
         <hr>
         <div class="container text-left">
-            <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Create
-                New User</a>
+        <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Create
+            New User</a>
         </div>
+
         <br>
         <table class="table table-bordered">
             <thead>
@@ -41,6 +42,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>BirthDate</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -59,12 +61,14 @@
                     <td>
                         <c:out value="${user.name}"/>
                     </td>
-
                     <td>
                         <c:out value="${user.email}"/>
                     </td>
                     <td>
                         <c:out value="${user.phoneNumber}"/>
+                    </td>
+                    <td>
+                        <c:out value="${user.birthDate}"/>
                     </td>
                     <td><a href="edit?id=<c:out value='${user.id}' />">Edit</a> &nbsp;&nbsp;&nbsp;&nbsp; <a
                             href="delete?id=<c:out value='${user.id}' />">Delete</a></td>
@@ -73,6 +77,11 @@
             </tbody>
 
         </table>
+
+        <div class="container text-right">
+            <a href="<%=request.getContextPath()%>/deleteAll" class="btn btn-success">Delete
+                All Users</a>
+        </div>
     </div>
 </div>
 </body>

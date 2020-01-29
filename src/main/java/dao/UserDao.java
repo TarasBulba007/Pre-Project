@@ -1,14 +1,13 @@
 package dao;
 
 import models.User;
-import userStorage.UserStorage;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserDao implements UserStorage {
+public class UserDao implements UserDaoInterface {
 
     public UserDao() {
     }
@@ -34,13 +33,14 @@ public class UserDao implements UserStorage {
     @Override
     public void createUser(User user)  {
         try (Connection connection = getServerConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(login, name, secondName, email, phoneNumber) values(?,?,?,?,?) ")) {
-            System.out.println("Create user: " +  user.getLogin() + " " + user.getName() + " " + user.getSecondName() + " " + user.getEmail() + " " + user.getPhoneNumber());
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(login, name, email, phoneNumber, birthDate) values(?,?,?,?,?) ")) {
+            System.out.println("Create user: " +  user.getLogin() + " " + user.getName() + " " +" " + user.getEmail() + " " + user.getPhoneNumber());
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getName());
-            preparedStatement.setString(3, user.getSecondName());
-            preparedStatement.setString(4, user.getEmail());
-            preparedStatement.setString(5, user.getPhoneNumber());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPhoneNumber());
+            java.sql.Date date = new java.sql.Date(user.getBirthDate().getTime());
+            preparedStatement.setDate(5, date);
             System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -48,18 +48,19 @@ public class UserDao implements UserStorage {
         }
     }
 
+    @Override
     public User getUserById(int id) {
         User user = null;
-        try (PreparedStatement preparedStatement = getServerConnection().prepareStatement("SELECT id, login, name, secondName, email, phoneNumber FROM users WHERE id =?");) {
+        try (PreparedStatement preparedStatement = getServerConnection().prepareStatement("SELECT id, login, name, email, phoneNumber, birthDate FROM users WHERE id =?");) {
             preparedStatement.setInt(1, id);
             ResultSet res = preparedStatement.executeQuery();
             while (res.next()) {
                 String login = res.getNString("login");
                 String name = res.getString("name");
-                String secondName = res.getNString("secondName");
                 String email = res.getString("email");
                 String phoneNumber = res.getString("phoneNumber");
-                user = new User(id, login, name, secondName, email, phoneNumber);
+                Date birthDate = res.getDate("birthDate");
+                user = new User(id, login, name, email, phoneNumber, birthDate);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,8 +68,7 @@ public class UserDao implements UserStorage {
         return user;
     }
 
-
-
+    @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         try (PreparedStatement preparedStatement = getServerConnection().prepareStatement("SELECT *FROM users");) {
@@ -78,10 +78,10 @@ public class UserDao implements UserStorage {
                     int id = rs.getInt("id");
                     String login = rs.getString("login");
                     String name = rs.getString("name");
-                    String secondName = rs.getString("secondName");
                     String email = rs.getString("email");
                     String phoneNumber = rs.getString("phoneNumber");
-                    users.add(new User(id, login, name, secondName, email,phoneNumber));
+                    Date birthDate = rs.getDate("birthDate");
+                    users.add(new User(id, login, name, email,phoneNumber, birthDate));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -89,15 +89,16 @@ public class UserDao implements UserStorage {
             return users;
         }
 
-
+    @Override
     public boolean updateUser(User user)  {
         boolean updated = false;
-        try (PreparedStatement statement = getServerConnection().prepareStatement("UPDATE users SET login=?, name=?, secondName=?, email=?, phoneNumber=? WHERE id=?");) {
+        try (PreparedStatement statement = getServerConnection().prepareStatement("UPDATE users SET login=?, name=?, email=?, phoneNumber=?, birthDate=? WHERE id=?");) {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getName());
-            statement.setString(3, user.getSecondName());
-            statement.setString(4, user.getEmail());
-            statement.setString(5, user.getPhoneNumber());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getPhoneNumber());
+            java.sql.Date date = new java.sql.Date(user.getBirthDate().getTime());
+            statement.setDate(5, date);
             statement.setInt(6, user.getId());
             updated = statement.executeUpdate() > 0;
         } catch (SQLException e){
@@ -128,6 +129,7 @@ public class UserDao implements UserStorage {
      * @param id
      */
 
+    @Override
     public boolean deleteUser(int id)  {
         boolean del = false;
         try (PreparedStatement statement = getServerConnection().prepareStatement("DELETE FROM users WHERE id=?");) {
@@ -141,7 +143,7 @@ public class UserDao implements UserStorage {
 
     @Override
     public void deleteAllUsers() {
-        try (PreparedStatement statement = getServerConnection().prepareStatement("DELETE *FROM users")) {
+        try (PreparedStatement statement = getServerConnection().prepareStatement("DELETE FROM users")) {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -151,7 +153,7 @@ public class UserDao implements UserStorage {
 
    public void createTableUsers() throws SQLException {
        Statement statement = getServerConnection().createStatement();
-       statement.execute("CREATE TABLE users (id  int(3) NOT NULL AUTO_INCREMENT, login varchar(255) NOT NULL, name varchar(255) NOT NULL, secondName varchar(255) NOT NULL, email varchar(220) NOT NULL, phoneNumber varchar(120), PRIMARY KEY (id));");
+       statement.execute("CREATE TABLE users (id  int(3) NOT NULL AUTO_INCREMENT, login varchar(255) NOT NULL, name varchar(255) NOT NULL, email varchar(220) NOT NULL, phoneNumber varchar(120), birthDate DATE NOT NULL , PRIMARY KEY (id));");
        statement.close();
    }
 

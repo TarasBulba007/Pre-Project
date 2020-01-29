@@ -56,16 +56,16 @@
                         </fieldset>
 
                     <fieldset class="form-group">
-                        <label>User SecondName</label> <input type="text" value="<c:out value='${user.secondName}' />" class="form-control" name="secondName">
-                    </fieldset>
-
-                    <fieldset class="form-group">
                         <label>User Email</label> <input type="text" value="<c:out value='${user.email}' />" class="form-control" name="email">
                     </fieldset>
 
                     <fieldset class="form-group">
                         <label>User PhoneNumber</label> <input type="text" value="<c:out value='${user.phoneNumber}' />" class="form-control" name="phoneNumber">
                     </fieldset>
+
+                        <fieldset class="form-group">
+                            <label>User BirthDate</label> <input type="text" value="<c:out value='${user.birthDate}' />" class="form-control" name="birthDate">
+                        </fieldset>
 
                     <button type="submit" class="btn btn-success">Save</button>
                 </form>

@@ -8,25 +8,25 @@ public class User {
     private int id;
     private String login;
     private String name;
-    private String secondName;
     private String email;
     private String phoneNumber;
+    private Date birthDate;
 
-    public User(int id, String login, String name, String secondName, String email, String phoneNumber) {
+    public User(int id, String login, String name, String email, String phoneNumber, Date birthDate) {
         this.id = id;
         this.login = login;
         this.name = name;
-        this.secondName = secondName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
     }
 
-    public User(String login, String name, String secondName, String email, String phoneNumber) {
+    public User(String login, String name, String email, String phoneNumber, Date birthDate) {
         this.login = login;
         this.name = name;
-        this.secondName = secondName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
     }
 
     public int getId() {
@@ -53,14 +53,6 @@ public class User {
         this.name = name;
     }
 
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -77,6 +69,14 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,13 +85,13 @@ public class User {
         return getId() == user.getId() &&
                 Objects.equals(getLogin(), user.getLogin()) &&
                 Objects.equals(getName(), user.getName()) &&
-                Objects.equals(getSecondName(), user.getSecondName()) &&
                 Objects.equals(getEmail(), user.getEmail()) &&
-                Objects.equals(getPhoneNumber(), user.getPhoneNumber());
+                Objects.equals(getPhoneNumber(), user.getPhoneNumber()) &&
+                Objects.equals(getBirthDate(), user.getBirthDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLogin(), getName(), getSecondName(), getEmail(), getPhoneNumber());
+        return Objects.hash(getId(), getLogin(), getName(), getEmail(), getPhoneNumber(), getBirthDate());
     }
 }

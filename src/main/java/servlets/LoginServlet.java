@@ -11,21 +11,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet({"/"})
 
 public class LoginServlet extends HttpServlet  {
     private static final long serialVersionUID = 1L;
-    private UserDao userStorageService;
+    private UserDao userDao;
 
     public void init() {
-        userStorageService = new UserDao();
+        userDao = new UserDao();
     }
 
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 
@@ -44,6 +46,9 @@ public class LoginServlet extends HttpServlet  {
                 case "/delete":
                     deleteUser(req, resp);
                     break;
+                case "/deleteAll":
+                    deleteAllUsers(req, resp);
+                    break;
                 case "/edit":
                     showEditForm(req, resp);
                     break;
@@ -54,14 +59,14 @@ public class LoginServlet extends HttpServlet  {
                     listUser(req, resp);
                     break;
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | ParseException ex) {
             throw new ServletException(ex);
         }
     }
 
     private void listUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<User> users = userStorageService.getAllUsers();
+        List<User> users = userDao.getAllUsers();
         for (User el : users){
             System.out.println(el);
         }
@@ -77,50 +82,50 @@ public class LoginServlet extends HttpServlet  {
         dispatcher.forward(request, response);
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        User existingUser = userStorageService.getUserById(id);
+        User existingUser = userDao.getUserById(id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("userForm.jsp");
         request.setAttribute("user", existingUser);
         dispatcher.forward(request, response);
 
     }
 
-    private void insertUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+    private void insertUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ParseException {
         String login = request.getParameter("login");
         String name = request.getParameter("name");
-        String secondName = request.getParameter("secondName");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-        User newUser = new User(login, name, secondName, email, phoneNumber);
-        System.out.println("new USer: " + newUser.getId() +" " + newUser.getLogin() + " " + newUser.getName() + " " +  newUser.getEmail() + " " + newUser.getPhoneNumber());
-        userStorageService.createUser(newUser);
+        Date birthDate = new SimpleDateFormat("dd.MM.YYYY").parse(request.getParameter("birthDate"));
+        User newUser = new User(login, name, email, phoneNumber, birthDate);
+        System.out.println("new USer: " + newUser.getId() +" " + newUser.getLogin() + " " + newUser.getName() + " " +  newUser.getEmail() + " " + newUser.getBirthDate().toString());
+        userDao.createUser(newUser);
         response.sendRedirect("list");
 
 
     }
 
-    private void updateUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+    private void updateUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ParseException {
         int id = Integer.parseInt(request.getParameter("id"));
         String login = request.getParameter("login");
         String name = request.getParameter("name");
-        String secondName = request.getParameter("secondName");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-
-        User var = new User(id, login, name, secondName, email, phoneNumber);
-        userStorageService.updateUser(var);
+        Date birthDate = new SimpleDateFormat("dd.MM.YYYY").parse(request.getParameter("birthDate"));
+        User var = new User(id, login, name, email, phoneNumber, birthDate);
+        System.out.println(var.getBirthDate());
+        userDao.updateUser(var);
         response.sendRedirect("list");
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        userStorageService.deleteUser(id);
+        userDao.deleteUser(id);
         response.sendRedirect("list");
+    }
 
+    private void deleteAllUsers(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        userDao.deleteAllUsers();
+        response.sendRedirect("list");
     }
 }
