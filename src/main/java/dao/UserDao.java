@@ -4,6 +4,7 @@ import models.User;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,7 +95,7 @@ public class UserDao implements UserDaoInterface {
     @Override
     public boolean updateUser(User user)  {
         boolean updated = false;
-        try (PreparedStatement statement = getServerConnection().prepareStatement("UPDATE users SET login=?, name=?, email=?, phoneNumber=?, birthDate=? WHERE id=?");) {
+        try (PreparedStatement statement = getServerConnection().prepareStatement("UPDATE users SET login=?, name=?, email=?, phoneNumber=?, STR_TO_DATE(birthDate, 'dd.MM.yyyy')=? WHERE id=?");) {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getName());
             statement.setString(3, user.getEmail());

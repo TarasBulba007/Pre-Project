@@ -64,7 +64,7 @@
                     </fieldset>
 
                         <fieldset class="form-group">
-                            <label>User BirthDate</label> <input type="text" value="<c:out value='${user.birthDate}' />" class="form-control" name="birthDate">
+                            <label>User BirthDate</label> <input type="date" value="<c:out value='${user.birthDate}' />" class="form-control" name="birthDate">
                         </fieldset>
 
                     <button type="submit" class="btn btn-success">Save</button>

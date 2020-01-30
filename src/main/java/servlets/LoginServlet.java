@@ -15,8 +15,11 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @WebServlet({"/"})
 
@@ -99,6 +102,9 @@ public class LoginServlet extends HttpServlet  {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
+      // DateTimeFormatter formatter =
+      //         DateTimeFormatter
+      //                 .ofPattern("dd.MM.yyyy");
         LocalDate birthDate = LocalDate.parse(request.getParameter("birthDate"));
         User newUser = new User(login, name, email, phoneNumber, birthDate);
         System.out.println("new USer: " + newUser.getId() +" " + newUser.getLogin() + " " + newUser.getName() + " " +  newUser.getEmail() + " " + newUser.getBirthDate().toString());
@@ -114,6 +120,9 @@ public class LoginServlet extends HttpServlet  {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
+      //  DateTimeFormatter formatter =
+      //          DateTimeFormatter
+      //                  .ofPattern("dd.MM.yyyy");
         LocalDate birthDate = LocalDate.parse(request.getParameter("birthDate"));
         User var = new User(id, login, name, email, phoneNumber, birthDate);
         System.out.println(var.getBirthDate());
